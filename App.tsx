@@ -1,17 +1,27 @@
-import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./apollo";
 import AppLoading from "expo-app-loading";
-import { Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
-import { StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import Profile from "./Screen/Profile";
+import Home from "./Screen/Home";
+import Search from "./Screen/Search";
 
 export default function App() {
+  const Tab = createBottomTabNavigator();
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
-  function preload(): Promise<any> {
-    const fontsToLoad = [Ionicons.font];
-    const fontPromises = fontsToLoad.map((font) => Font.loadAsync(font));
-    return Promise.all(fontPromises);
+  async function preload(): Promise<any> {
+    const ioniconsLoad = [Ionicons.font];
+    const ioniconsPromises = ioniconsLoad.map((font) => Font.loadAsync(font));
+    const fontPromises = await Font.loadAsync({
+      Kaushan: require("./assets/KaushanScript.ttf"),
+      Notosans: require("./assets/NotoSansKR.otf"),
+    });
+    return Promise.all([fontPromises, ioniconsPromises]);
   }
   if (loading) {
     return (
@@ -23,18 +33,62 @@ export default function App() {
     );
   }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveTintColor: "#374151",
+            tabBarShowLabel: false,
+            tabBarStyle: {
+              height: 90,
+              position: "absolute",
+              backgroundColor: "#ffffff",
+              borderTopLeftRadius: 40,
+              borderTopRightRadius: 40,
+              borderTopColor: "white",
+              paddingVertical: 10,
+              paddingHorizontal: 15,
+              shadowColor: "#e7e7e7",
+              shadowOpacity: 0.6,
+              shadowOffset: {
+                width: 0,
+                height: -7,
+              },
+              shadowRadius: 30,
+              elevation: 30,
+            },
+          }}
+        >
+          <Tab.Screen
+            name="home"
+            component={Home}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Ionicons name="home" size={28} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="search"
+            component={Search}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Ionicons name="search" size={28} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="profile"
+            component={Profile}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Ionicons name="person" size={28} color={color} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
