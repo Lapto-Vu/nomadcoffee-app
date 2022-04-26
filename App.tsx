@@ -1,19 +1,22 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "./apollo";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import { client, logInVar, tokenVar } from "./apollo";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import Profile from "./Screen/Profile";
 import Home from "./Screen/Home";
 import Search from "./Screen/Search";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Default from "./Screen/SignUp.Navigate";
+import User from "./Screen/User";
 
 export default function App() {
   const Tab = createBottomTabNavigator();
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
+  const isLogInState = useReactiveVar(logInVar);
   async function preload(): Promise<any> {
     const ioniconsLoad = [Ionicons.font];
     const ioniconsPromises = ioniconsLoad.map((font) => Font.loadAsync(font));
@@ -21,6 +24,12 @@ export default function App() {
       Kaushan: require("./assets/KaushanScript.ttf"),
       Notosans: require("./assets/NotoSansKR.otf"),
     });
+    const token = await AsyncStorage.getItem("token");
+
+    if (token) {
+      logInVar(true);
+      tokenVar(token);
+    }
     return Promise.all([fontPromises, ioniconsPromises]);
   }
   if (loading) {
@@ -80,7 +89,7 @@ export default function App() {
           />
           <Tab.Screen
             name="profile"
-            component={Profile}
+            component={isLogInState ? User : Default}
             options={{
               tabBarIcon: ({ color }) => (
                 <Ionicons name="person" size={28} color={color} />

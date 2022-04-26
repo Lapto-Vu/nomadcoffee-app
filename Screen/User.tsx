@@ -1,5 +1,6 @@
+import { gql, useQuery } from "@apollo/client";
 import styled from "styled-components/native";
-import { LogUserOut } from "../apollo";
+import { removeLogInTokenAndVar } from "../apollo";
 
 const Container = styled.View`
   flex: 1;
@@ -55,25 +56,52 @@ type IUser = {
   email: string;
 };
 
-export default function User({ userId, name, username, email }: IUser) {
+export const CURRENT_USER_QR = gql`
+  query currentUser {
+    currentUser {
+      ok
+      error
+      user {
+        id
+        name
+        username
+        email
+        avatarURL
+      }
+    }
+  }
+`;
+
+export default function User({ navigation }: any) {
+  const { data, loading } = useQuery(CURRENT_USER_QR, {
+    fetchPolicy: "network-only",
+  });
+
+  const userLogoutAndRouteToHome = () => {
+    removeLogInTokenAndVar();
+    navigation.navigate("profile");
+  };
+
   return (
     <Container>
-      <Section>
-        <Box>
-          <Header>아이디</Header>
-          <Words>{username}</Words>
-        </Box>
-        <Box>
-          <Header>성명</Header>
-          <Words>{name}</Words>
-        </Box>
-        <Box>
-          <Header>이메일</Header>
-          <Words>{email}</Words>
-        </Box>
-      </Section>
+      {!loading ? (
+        <Section>
+          <Box>
+            <Header>아이디</Header>
+            <Words>{data?.currentUser?.user.username}</Words>
+          </Box>
+          <Box>
+            <Header>성명</Header>
+            <Words>{data?.currentUser?.user.name}</Words>
+          </Box>
+          <Box>
+            <Header>이메일</Header>
+            <Words>{data?.currentUser?.user.email}</Words>
+          </Box>
+        </Section>
+      ) : null}
       <Button
-        onPress={() => LogUserOut()}
+        onPress={() => userLogoutAndRouteToHome()}
         style={{
           shadowColor: "#c6c6c6",
           shadowOffset: {

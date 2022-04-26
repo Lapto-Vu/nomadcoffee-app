@@ -1,7 +1,7 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import styled from "styled-components/native";
 import { gql, useMutation } from "@apollo/client";
-import { LogUserIn } from "../apollo";
+import { setLogInTokenAndVar } from "../apollo";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const Container = styled.KeyboardAvoidingView`
@@ -106,13 +106,15 @@ export default function UserLogIn({ route, navigation }: any) {
       setError(type, { message: error });
     }
     if (token) {
-      await LogUserIn(token);
-      navigation.navigate("welcome");
+      setLogInTokenAndVar(token);
+      navigation.navigate("profile");
     }
   };
   const [login] = useMutation(LOGIN_MT, { onCompleted });
   const onSubmit: SubmitHandler<IFormValues> = (data) =>
-    login({ variables: { ...data } });
+    login({
+      variables: { ...data },
+    });
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Container behavior="padding">

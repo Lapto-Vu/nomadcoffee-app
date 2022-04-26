@@ -9,7 +9,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TOKEN = "token";
 
-export const isLoggedInVar = makeVar(Boolean(AsyncStorage.getItem(TOKEN)));
+export const logInVar = makeVar(false);
+export const tokenVar = makeVar<string | null>("");
 
 const httpLink = createHttpLink({
   uri:
@@ -20,11 +21,10 @@ const httpLink = createHttpLink({
 
 const authLink = setContext(async (_, { headers }) => {
   const token = await AsyncStorage.getItem(TOKEN);
-  console.log("authToken:", token);
   return {
     headers: {
       ...headers,
-      token: token ? token : "",
+      token: token,
     },
   };
 });
@@ -34,13 +34,14 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const LogUserIn = async (token: string) => {
-  console.log(token);
+export const setLogInTokenAndVar = async (token: string) => {
   await AsyncStorage.setItem(TOKEN, token);
-  isLoggedInVar(true);
+  logInVar(true);
+  tokenVar(token);
 };
 
-export const LogUserOut = async () => {
+export const removeLogInTokenAndVar = async () => {
   await AsyncStorage.removeItem(TOKEN);
-  isLoggedInVar(false);
+  logInVar(false);
+  tokenVar(null);
 };
