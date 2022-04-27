@@ -13,10 +13,10 @@ const Main = styled.Text`
   color: rgb(55, 65, 81);
 `;
 
-export default function Home() {
+export default function Shop() {
   return (
     <Container>
-      <Main>"홈페이지창" 작업중에 있습니다.</Main>
+      <Main>"카페창" 작업중에 있습니다.</Main>
     </Container>
   );
 }

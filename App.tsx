@@ -6,7 +6,7 @@ import * as Font from "expo-font";
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import Home from "./Screen/Home";
+import Home from "./Screen/Home.Navigate";
 import Search from "./Screen/Search";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Default from "./Screen/SignUp.Navigate";
@@ -24,6 +24,7 @@ export default function App() {
       Kaushan: require("./assets/KaushanScript.ttf"),
       Notosans: require("./assets/NotoSansKR.otf"),
     });
+
     const token = await AsyncStorage.getItem("token");
 
     if (token) {

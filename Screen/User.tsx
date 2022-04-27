@@ -88,15 +88,15 @@ export default function User({ navigation }: any) {
         <Section>
           <Box>
             <Header>아이디</Header>
-            <Words>{data?.currentUser?.user.username}</Words>
+            <Words>{data?.currentUser?.user?.username}</Words>
           </Box>
           <Box>
             <Header>성명</Header>
-            <Words>{data?.currentUser?.user.name}</Words>
+            <Words>{data?.currentUser?.user?.name}</Words>
           </Box>
           <Box>
             <Header>이메일</Header>
-            <Words>{data?.currentUser?.user.email}</Words>
+            <Words>{data?.currentUser?.user?.email}</Words>
           </Box>
         </Section>
       ) : null}

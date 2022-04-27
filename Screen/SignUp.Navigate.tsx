@@ -14,16 +14,8 @@ export default function Default() {
       }}
     >
       <Stack.Screen name="welcome" component={Welcome} />
-      <Stack.Screen
-        options={{ title: "로그인" }}
-        name="userlogin"
-        component={UserLogIn}
-      />
-      <Stack.Screen
-        options={{ title: "회원가입" }}
-        name="createaccount"
-        component={CreateAccount}
-      />
+      <Stack.Screen name="userlogin" component={UserLogIn} />
+      <Stack.Screen name="createaccount" component={CreateAccount} />
     </Stack.Navigator>
   );
 }
