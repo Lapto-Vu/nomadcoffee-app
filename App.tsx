@@ -83,6 +83,8 @@ export default function App() {
             name="search"
             component={Search}
             options={{
+              headerShown: true,
+              headerTransparent: true,
               tabBarIcon: ({ color }) => (
                 <Ionicons name="search" size={28} color={color} />
               ),

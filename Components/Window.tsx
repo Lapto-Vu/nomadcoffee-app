@@ -21,11 +21,6 @@ const ImageBox = styled.View`
   justify-content: center;
   align-items: center;
 `;
-
-const TagBox = styled.View`
-  flex-direction: row;
-`;
-
 const TagText = styled.Text`
   font-family: "Notosans";
   font-size: 13px;
@@ -49,7 +44,7 @@ const InfoText = styled.Text`
   color: rgb(55, 65, 81);
 `;
 
-type IFeed = {
+export type IFeed = {
   id: number;
   name: string;
   photos: {
@@ -57,6 +52,7 @@ type IFeed = {
     url: string;
   }[];
   categories: {
+    id: number;
     slug: string;
   }[];
   user: {
@@ -65,6 +61,7 @@ type IFeed = {
     avatarURL: string;
   };
 };
+
 export default function Window({ id, photos, categories, name, user }: IFeed) {
   const { width, height } = useWindowDimensions();
   return (
@@ -113,21 +110,18 @@ export default function Window({ id, photos, categories, name, user }: IFeed) {
           marginBottom: 8,
         }}
       >
-        <TagBox
+        <TagText
+          key={`${id}`}
           style={{
             width: width - 50,
             paddingLeft: 5,
             paddingTop: 5,
           }}
         >
-          {categories.map((i: { slug: string }) => {
-            return (
-              <>
-                <TagText>{i.slug + "\u00a0\u00a0"}</TagText>
-              </>
-            );
-          })}
-        </TagBox>
+          {categories.map(
+            (i: { slug: string; id: number }) => i.slug + "\u00a0\u00a0"
+          )}
+        </TagText>
         <MainBox
           style={{
             width: width - 50,

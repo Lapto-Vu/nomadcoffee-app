@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, useWindowDimensions } from "react-native";
+import { ActivityIndicator, FlatList, ListRenderItemInfo } from "react-native";
 import styled from "styled-components/native";
-import Window from "../Components/Window";
+import Window, { IFeed } from "../Components/Window";
 
 const Container = styled.SafeAreaView`
   height: 100%;
@@ -22,6 +22,7 @@ export const SEE_COFFEESHOPS_QR = gql`
         url
       }
       categories {
+        id
         slug
       }
       user {
@@ -34,25 +35,6 @@ export const SEE_COFFEESHOPS_QR = gql`
   }
 `;
 
-type IFeed = {
-  item: {
-    id: number;
-    name: string;
-    photos: {
-      id: number;
-      url: string;
-    }[];
-    categories: {
-      slug: string;
-    }[];
-    user: {
-      id: number;
-      username: string;
-      avatarURL: string;
-    };
-  };
-};
-
 export default function Feed() {
   const { data, refetch, fetchMore } = useQuery(SEE_COFFEESHOPS_QR, {
     variables: { page: 0 },
@@ -63,7 +45,8 @@ export default function Feed() {
     setRefreshing(false);
   };
   const [refreshing, setRefreshing] = useState(false);
-  const renderFeed = ({ item }: IFeed) => {
+
+  const passRenderComp = ({ item }: { item: IFeed }) => {
     return <Window {...item} key={item.id} />;
   };
   return (
@@ -83,10 +66,12 @@ export default function Feed() {
             },
           })
         }
-        keyExtractor={(photo) => "" + photo.id}
+        keyExtractor={(item) => {
+          return "" + item.id;
+        }}
         showsVerticalScrollIndicator={false}
         data={data?.seeCoffeeShops}
-        renderItem={renderFeed}
+        renderItem={passRenderComp}
       />
     </Container>
   );
