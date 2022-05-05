@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ActivityIndicator, FlatList, ListRenderItemInfo } from "react-native";
+import { FlatList } from "react-native";
 import styled from "styled-components/native";
 import Window, { IFeed } from "../Components/Window";
 
@@ -44,10 +44,19 @@ export default function Feed() {
     await refetch();
     setRefreshing(false);
   };
+
+  const refreshAndFetchMore = async () => {
+    await fetchMore({
+      variables: {
+        page: data?.seeCoffeeShops?.length,
+      },
+    });
+  };
+
   const [refreshing, setRefreshing] = useState(false);
 
   const passRenderComp = ({ item }: { item: IFeed }) => {
-    return <Window {...item} key={item.id} />;
+    return <Window {...item} />;
   };
   return (
     <Container>
@@ -59,15 +68,9 @@ export default function Feed() {
           height: "100%",
         }}
         onEndReachedThreshold={0.02}
-        onEndReached={() =>
-          fetchMore({
-            variables: {
-              page: data?.seeCoffeeShops?.length,
-            },
-          })
-        }
-        keyExtractor={(item) => {
-          return "" + item.id;
+        onEndReached={() => refreshAndFetchMore()}
+        keyExtractor={(item, index) => {
+          return "" + index;
         }}
         showsVerticalScrollIndicator={false}
         data={data?.seeCoffeeShops}

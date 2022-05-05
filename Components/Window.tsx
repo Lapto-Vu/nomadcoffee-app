@@ -1,7 +1,8 @@
 import styled from "styled-components/native";
 import { Image, useWindowDimensions } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const Section = styled.View`
+const Section = styled.TouchableOpacity`
   background-color: #ffffff;
   justify-content: center;
   align-items: center;
@@ -63,9 +64,12 @@ export type IFeed = {
 };
 
 export default function Window({ id, photos, categories, name, user }: IFeed) {
+  const navigation = useNavigation<any>();
+
   const { width, height } = useWindowDimensions();
   return (
     <Section
+      onPress={() => navigation.navigate("shop", { shopId: id })}
       style={{
         shadowColor: "#a2a2a2",
         shadowOffset: {
@@ -111,16 +115,13 @@ export default function Window({ id, photos, categories, name, user }: IFeed) {
         }}
       >
         <TagText
-          key={`${id}`}
           style={{
             width: width - 50,
             paddingLeft: 5,
             paddingTop: 5,
           }}
         >
-          {categories.map(
-            (i: { slug: string; id: number }) => i.slug + "\u00a0\u00a0"
-          )}
+          {categories.map((i: { slug: string }) => i.slug + "\u00a0\u00a0")}
         </TagText>
         <MainBox
           style={{

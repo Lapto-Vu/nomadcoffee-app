@@ -1,22 +1,20 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { ApolloProvider } from "@apollo/client";
 import { client, logInVar, tokenVar } from "./apollo";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { useState } from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import Home from "./Screen/Home.Navigate";
-import Search from "./Screen/Search";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Default from "./Screen/SignUp.Navigate";
-import User from "./Screen/User";
+import TabNav from "./Screen/Tab.Navigate";
+import Upload from "./Screen/Upload.Navigate";
+import UploadForm from "./Screen/Upload.Form";
 
-export default function App() {
-  const Tab = createBottomTabNavigator();
+export default function App({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
-  const isLogInState = useReactiveVar(logInVar);
+  const Stack = createNativeStackNavigator();
   async function preload(): Promise<any> {
     const ioniconsLoad = [Ionicons.font];
     const ioniconsPromises = ioniconsLoad.map((font) => Font.loadAsync(font));
@@ -45,61 +43,29 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <Tab.Navigator
+        <Stack.Navigator
           screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: "#374151",
-            tabBarShowLabel: false,
-            tabBarStyle: {
-              height: 90,
-              position: "absolute",
-              backgroundColor: "#ffffff",
-              borderTopLeftRadius: 40,
-              borderTopRightRadius: 40,
-              borderTopColor: "white",
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              shadowColor: "#e7e7e7",
-              shadowOpacity: 0.6,
-              shadowOffset: {
-                width: 0,
-                height: -7,
-              },
-              shadowRadius: 30,
-              elevation: 30,
-            },
+            presentation: "fullScreenModal",
           }}
         >
-          <Tab.Screen
-            name="home"
-            component={Home}
-            options={{
-              tabBarIcon: ({ color }) => (
-                <Ionicons name="home" size={28} color={color} />
-              ),
-            }}
+          <Stack.Screen
+            name="tabnav"
+            options={{ headerShown: false }}
+            component={TabNav}
           />
-          <Tab.Screen
-            name="search"
-            component={Search}
-            options={{
-              headerShown: true,
-              headerTransparent: true,
-              tabBarIcon: ({ color }) => (
-                <Ionicons name="search" size={28} color={color} />
-              ),
-            }}
+          <Stack.Screen
+            name="upload"
+            options={{ headerShown: false }}
+            component={Upload}
           />
-          <Tab.Screen
-            name="profile"
-            component={isLogInState ? User : Default}
+          <Stack.Screen
+            name="uploadform"
             options={{
-              tabBarIcon: ({ color }) => (
-                <Ionicons name="person" size={28} color={color} />
-              ),
+              title: "새 커피숍 만들기",
             }}
+            component={UploadForm}
           />
-        </Tab.Navigator>
+        </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );

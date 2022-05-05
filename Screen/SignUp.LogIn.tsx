@@ -107,6 +107,7 @@ export default function UserLogIn({ route, navigation }: any) {
     }
     if (token) {
       setLogInTokenAndVar(token);
+      navigation.goBack();
       navigation.navigate("profile");
     }
   };
@@ -125,10 +126,10 @@ export default function UserLogIn({ route, navigation }: any) {
         >
           <ErrorText
             style={{
-              color: "#5bda5b",
+              color: "#4e914e",
             }}
           >
-            {route?.params?.state}
+            {route?.params?.message}
           </ErrorText>
         </ErrorBox>
         <HeaderBox>

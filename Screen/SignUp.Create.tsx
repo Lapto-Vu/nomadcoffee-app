@@ -101,7 +101,7 @@ interface IResultData {
   };
 }
 
-export default function CreateAccount({ navigation }: any) {
+export default function CreateAccount({ navigation, route }: any) {
   const {
     control,
     handleSubmit,
@@ -117,7 +117,7 @@ export default function CreateAccount({ navigation }: any) {
       setError(type, { message: error });
     } else {
       navigation.navigate("userlogin", {
-        state: "정상적으로 가입되었습니다. 로그인하세요.",
+        message: "정상적으로 가입되었습니다. 로그인하세요.",
       });
     }
   };
@@ -134,6 +134,19 @@ export default function CreateAccount({ navigation }: any) {
         <HeaderBox>
           <Header>SignUp</Header>
         </HeaderBox>
+        <ErrorBox
+          style={{
+            marginBottom: 20,
+          }}
+        >
+          <ErrorText
+            style={{
+              color: "#4e914e",
+            }}
+          >
+            {route?.params?.message}
+          </ErrorText>
+        </ErrorBox>
         <ErrorBox>
           <ErrorText>
             {errors?.email?.message ||
